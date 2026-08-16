@@ -1,0 +1,17 @@
+{
+  "packages": [
+    "go@latest",
+    "golangci-lint@latest",
+    "gopls@latest",
+    "govulncheck@latest",
+    "just@latest",
+    "just-lsp@latest"
+  ],
+  "env": {
+    "CGO_ENABLED": "0"
+  },
+  "shell": {
+    "init_hook": [],
+    "scripts": {}
+  }
+}
