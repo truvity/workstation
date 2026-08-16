@@ -7,13 +7,26 @@ those manage a *project's* environment, and this configures the *developer's
 machine*. The boundary is that simple — is this about making an environment
 ready, or about a product?
 
-| Tool | Configures |
+| Tool | Does |
 | --- | --- |
 | `dockerctl` | `~/.docker/config.json` ECR credential helpers |
+| `awsctl` | keeps an AWS SSO session alive — idempotent, so other steps can depend on it |
+| `licencectl` | fetches the goreleaser-pro licence, cached **once per machine** |
+| `playwrightctl` | keeps the nix browsers and the npm runner in step, and finds the newest shared version |
 
-Still living in `truvity/bar` and moving here: home direnv whitelist, AWS SSO
-session, goreleaser-pro licence + install, and the devbox↔npm playwright
-lockstep.
+Still in `truvity/bar`: the home direnv whitelist.
+
+### Two behaviours changed in the move, deliberately
+
+**`licencectl` caches per machine, not per repo.** bar cached to
+`<gitRoot>/bin/.goreleaser-key`, so every clone and every git worktree fetched
+the same secret again. A licence belongs to the developer, not to a checkout.
+
+**`playwrightctl` can answer, not just complain.** bar could say "these two
+disagree" but never "here is the newest version you can actually have".
+`playwrightctl latest` prints the highest release present in **both** nixpkgs
+and npm — the number an upgrade needs, since npm regularly offers versions
+nixpkgs has never packaged and the mismatch only surfaces at run time.
 
 ## Why a separate repo
 
