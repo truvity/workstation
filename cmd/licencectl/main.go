@@ -35,7 +35,16 @@ const (
 	dirPerm  = 0o700
 )
 
+// main stays a thin wrapper so os.Exit never strands a deferred cancel:
+// os.Exit skips defers, so the two cannot share a function.
 func main() {
+	if err := cli(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
+func cli() error {
 	secretID := flag.String("secret-id", "", "AWS Secrets Manager secret id holding {\"apikey\": …}")
 	profile := flag.String("profile", "", "AWS profile for the secret (optional; ambient credentials otherwise)")
 	region := flag.String("region", "", "AWS region for the secret")
@@ -49,20 +58,17 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelInfo}))
 
 	path, err := cachePath()
-	if err == nil && *printPath {
+	if err != nil {
+		return err
+	}
+
+	if *printPath {
 		fmt.Println(path)
 
-		return
+		return nil
 	}
 
-	if err == nil {
-		err = run(ctx, logger, path, *secretID, *profile, *region, *force)
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
-	}
+	return run(ctx, logger, path, *secretID, *profile, *region, *force)
 }
 
 // cachePath is user-level and XDG-aware: one licence per machine.

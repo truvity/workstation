@@ -15,8 +15,8 @@ func TestLessIsNumericNotLexical(t *testing.T) {
 		a, b string
 		want bool
 	}{
-		{"1.9.0", "1.10.0", true},   // the lexical trap
-		{"1.58.2", "1.61.1", true},  // the real pair this tool was written for
+		{"1.9.0", "1.10.0", true},  // the lexical trap
+		{"1.58.2", "1.61.1", true}, // the real pair this tool was written for
 		{"1.61.1", "1.62.1", true},
 		{"1.10.0", "1.9.0", false},
 		{"1.61.1", "1.61.1", false}, // equal is not less

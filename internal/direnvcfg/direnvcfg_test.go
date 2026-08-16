@@ -603,14 +603,14 @@ func TestTomlArrayCloseIndex(t *testing.T) {
 // a regular file (which would orphan the dotfile source).
 func TestSetupDirenvWhitelistFollowsSymlink(t *testing.T) {
 	dotfiles := t.TempDir()
-	real := filepath.Join(dotfiles, "direnv.toml")
+	realPath := filepath.Join(dotfiles, "direnv.toml")
 
-	if err := os.WriteFile(real, []byte("[whitelist]\nprefix = [\"/elsewhere\"]\n"), 0o600); err != nil {
+	if err := os.WriteFile(realPath, []byte("[whitelist]\nprefix = [\"/elsewhere\"]\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	link := filepath.Join(t.TempDir(), "direnv.toml")
-	if err := os.Symlink(real, link); err != nil {
+	if err := os.Symlink(realPath, link); err != nil {
 		t.Fatal(err)
 	}
 
@@ -628,7 +628,7 @@ func TestSetupDirenvWhitelistFollowsSymlink(t *testing.T) {
 		t.Fatalf("the symlink must survive the atomic write, got mode %v", fi.Mode())
 	}
 
-	got, err := os.ReadFile(real)
+	got, err := os.ReadFile(realPath)
 	if err != nil {
 		t.Fatal(err)
 	}
