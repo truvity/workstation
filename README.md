@@ -13,8 +13,9 @@ ready, or about a product?
 | `awsctl` | keeps an AWS SSO session alive — idempotent, so other steps can depend on it |
 | `licencectl` | fetches the goreleaser-pro licence, cached **once per machine** |
 | `playwrightctl` | keeps the nix browsers and the npm runner in step, and finds the newest shared version |
+| `direnvctl` | keeps direnv's whitelist covering a directory of working copies |
 
-Still in `truvity/bar`: the home direnv whitelist.
+Nothing is left in `truvity/bar` — barctl is fully retired.
 
 ### Two behaviours changed in the move, deliberately
 

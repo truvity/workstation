@@ -20,6 +20,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+
+	"github.com/truvity/workstation/internal/atomicfile"
 )
 
 const (
@@ -113,8 +115,8 @@ func Apply(cfg map[string]any, hosts []string) []string {
 	return changed
 }
 
-// WriteAtomic writes cfg via a temp file and rename, so a crash mid-write
-// cannot leave Docker with a config it refuses to parse.
+// WriteAtomic writes cfg via a temp file and rename, following symlinks so a
+// dotfiles-managed config keeps its link.
 func WriteAtomic(path string, cfg map[string]any) error {
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
@@ -123,46 +125,7 @@ func WriteAtomic(path string, cfg map[string]any) error {
 
 	data = append(data, '\n')
 
-	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0o700); err != nil {
-		return fmt.Errorf("create %s: %w", dir, err)
-	}
-
-	tmp, err := os.CreateTemp(dir, "."+filepath.Base(path)+".tmp-*")
-	if err != nil {
-		return fmt.Errorf("create temp file: %w", err)
-	}
-
-	name := tmp.Name()
-	defer os.Remove(name) //nolint:errcheck // best-effort cleanup on failure
-
-	if err := tmp.Chmod(filePerm); err != nil {
-		_ = tmp.Close()
-
-		return fmt.Errorf("chmod temp file: %w", err)
-	}
-
-	if _, err := tmp.Write(data); err != nil {
-		_ = tmp.Close()
-
-		return fmt.Errorf("write temp file: %w", err)
-	}
-
-	if err := tmp.Sync(); err != nil {
-		_ = tmp.Close()
-
-		return fmt.Errorf("sync temp file: %w", err)
-	}
-
-	if err := tmp.Close(); err != nil {
-		return fmt.Errorf("close temp file: %w", err)
-	}
-
-	if err := os.Rename(name, path); err != nil {
-		return fmt.Errorf("rename %s -> %s: %w", name, path, err)
-	}
-
-	return nil
+	return atomicfile.Write(path, data, 0o700, filePerm)
 }
 
 // SortedKeys is a small helper for deterministic output.
