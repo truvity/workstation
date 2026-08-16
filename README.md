@@ -43,9 +43,14 @@ them without cloning anything:
 
 ```bash
 go run github.com/truvity/workstation/cmd/dockerctl@v0.1.0 \
-  --ecr 123456789012:eu-central-1 \
-  --ecr 210987654321:eu-central-1
+  --ecr <account-id>:<region> \
+  --ecr <account-id>:<region>
 ```
+
+The placeholders are not politeness: `hack/leak-canary.sh` fails the build on
+anything shaped like an account id, so the examples here *cannot* drift into
+real coordinates. Callers supply them — bar reads its own `platform.yaml` and
+passes one `--ecr` per registry.
 
 `--check` verifies without writing, so a repo's environment check and the
 thing that fixes it are the same binary and cannot drift apart.
