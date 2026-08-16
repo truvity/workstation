@@ -21,16 +21,22 @@ import (
 	"syscall"
 )
 
+// main stays a thin wrapper so os.Exit never strands a deferred cancel:
+// os.Exit skips defers, so the two cannot share a function.
 func main() {
+	if err := cli(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
+func cli() error {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
 	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelInfo}))
 
-	if err := run(ctx, logger); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
-	}
+	return run(ctx, logger)
 }
 
 func run(ctx context.Context, logger *slog.Logger) error {

@@ -1,3 +1,5 @@
+// Package direnvcfg reads and edits direnv's TOML whitelist so that a
+// directory of working copies stays covered by a single prefix entry.
 package direnvcfg
 
 import (
@@ -163,7 +165,7 @@ func checkDirenvWhitelist(configPath, requiredDir string) error {
 	return nil
 }
 
-// CheckDirenvWorktreeWhitelist validates that the worktree prefix is covered
+// Check validates that the worktree prefix is covered
 // by the direnv.toml whitelist. Any whitelist.prefix entry that is a
 // path-prefix of <main repo root>/worktree satisfies the check — direnv's
 // whitelist.prefix entries cover every directory beneath them.
@@ -185,7 +187,7 @@ func Check(ctx context.Context, logger *slog.Logger, requiredDir string) error {
 // package knows how direnv decides coverage. That split is what let the code
 // leave bar.
 
-// SetupDirenvWorktreeWhitelist ensures the direnv whitelist covers the
+// Setup ensures the direnv whitelist covers the
 // worktree prefix, adding the stable <main repo root>/worktree entry only
 // when no existing entry already covers it.
 func Setup(ctx context.Context, logger *slog.Logger, targetDir string) error {

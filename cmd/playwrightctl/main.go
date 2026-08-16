@@ -34,7 +34,16 @@ import (
 
 var semver = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
+// main stays a thin wrapper so os.Exit never strands a deferred cancel:
+// os.Exit skips defers, so the two cannot share a function.
 func main() {
+	if err := cli(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
+func cli() error {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
@@ -43,20 +52,13 @@ func main() {
 		cmd = os.Args[1]
 	}
 
-	var err error
-
 	switch cmd {
 	case "check":
-		err = check(ctx)
+		return check(ctx)
 	case "latest":
-		err = latest(ctx)
+		return latest(ctx)
 	default:
-		err = fmt.Errorf("unknown command %q (want: check, latest)", cmd)
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		return fmt.Errorf("unknown command %q (want: check, latest)", cmd)
 	}
 }
 
@@ -72,9 +74,13 @@ func check(ctx context.Context) error {
 	}
 
 	if nix != npm {
-		return fmt.Errorf("playwright mismatch: nix has %s, npm has %s.\n"+
-			"They ship together — the nix package provides the browsers the npm runner drives.\n"+
-			"Run `playwrightctl latest` for the newest version both sides can supply, and move both.",
+		// One line, no trailing period: this is an error value, and Go
+		// errors get wrapped into other sentences. The guidance still
+		// travels with it — losing it would leave the reader knowing the
+		// two disagree and not what to do about it.
+		return fmt.Errorf("playwright mismatch: nix has %s, npm has %s — they ship together "+
+			"(the nix package provides the browsers the npm runner drives); run `playwrightctl latest` "+
+			"for the newest version both sides can supply, and move both",
 			nix, npm)
 	}
 
