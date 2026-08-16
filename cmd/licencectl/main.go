@@ -19,6 +19,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -26,6 +27,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 )
 
@@ -135,9 +137,15 @@ func fetch(ctx context.Context, secretID, profile, region string) (key, source s
 		args = append(args, "--region", region)
 	}
 
-	out, err := exec.CommandContext(ctx, "aws", args...).CombinedOutput()
+	// Output(), never CombinedOutput(): the AWS CLI writes warnings and
+	// deprecation notices to stderr, and CombinedOutput would interleave
+	// them into the bytes json.Unmarshal reads below — turning any notice
+	// into "parse secret string" on a path that fetches a licence key.
+	// The sibling bug in playwrightctl was not hypothetical; this one is
+	// the same shape, found by looking rather than by being bitten.
+	out, err := exec.CommandContext(ctx, "aws", args...).Output()
 	if err != nil {
-		return "", "", fmt.Errorf("aws secretsmanager get-secret-value: %w (%s)", err, out)
+		return "", "", fmt.Errorf("aws secretsmanager get-secret-value: %w (%s)", err, stderrOf(err))
 	}
 
 	// The CLI returns the secret as a quoted JSON string, so it unwraps twice.
@@ -159,4 +167,16 @@ func fetch(ctx context.Context, secretID, profile, region string) (key, source s
 	}
 
 	return secret.APIKey, "secretsmanager:" + secretID, nil
+}
+
+// stderrOf recovers the stderr an *exec.ExitError captured, so switching a
+// call from CombinedOutput() to Output() does not lose the diagnostic text
+// along with the pollution.
+func stderrOf(err error) string {
+	var ee *exec.ExitError
+	if errors.As(err, &ee) {
+		return strings.TrimSpace(string(ee.Stderr))
+	}
+
+	return ""
 }

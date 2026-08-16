@@ -21,6 +21,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -164,9 +165,14 @@ func nixAvailable(ctx context.Context) ([]string, error) {
 }
 
 func npmAvailable(ctx context.Context) ([]string, error) {
-	out, err := exec.CommandContext(ctx, "npm", "view", "playwright", "versions", "--json").CombinedOutput()
+	// Output(), never CombinedOutput(): npm writes notices and warnings to
+	// stderr, and CombinedOutput interleaves them into the bytes we then
+	// hand to json.Unmarshal. That is not hypothetical — it is why this
+	// command failed for its whole life with
+	// `parse npm versions: invalid character 'A' after top-level value`.
+	out, err := exec.CommandContext(ctx, "npm", "view", "playwright", "versions", "--json").Output()
 	if err != nil {
-		return nil, fmt.Errorf("npm view playwright versions: %w", err)
+		return nil, fmt.Errorf("npm view playwright versions: %w (%s)", err, stderrOf(err))
 	}
 
 	var versions []string
@@ -191,4 +197,16 @@ func less(a, b string) bool {
 	}
 
 	return len(as) < len(bs)
+}
+
+// stderrOf recovers the stderr an *exec.ExitError captured, so switching a
+// call from CombinedOutput() to Output() does not lose the diagnostic text
+// along with the pollution.
+func stderrOf(err error) string {
+	var ee *exec.ExitError
+	if errors.As(err, &ee) {
+		return strings.TrimSpace(string(ee.Stderr))
+	}
+
+	return ""
 }
