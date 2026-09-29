@@ -16,10 +16,6 @@
       "before 6am"
     ]
   },
-  "ignorePaths": [
-    "devbox.json",
-    "devbox.lock"
-  ],
   "packageRules": [
     {
       "description": "Group all non-major updates together",
