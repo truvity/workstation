@@ -3,6 +3,10 @@
 All notable changes to this project are documented here. For releases, see
 the [releases page](https://github.com/truvity/workstation/releases).
 
+## v0.1.2
+
+- README pins the install example to the latest tag and gains `Consumers` and `Neighbours`; `renovate.json` extends the shared preset (the `go` directive is owned by devbox-update); ci-workflows pins moved to v3.13.1.
+
 ## v0.1.1
 
 ### Fixed
