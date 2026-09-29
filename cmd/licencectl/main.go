@@ -1,13 +1,14 @@
 // Command licencectl fetches the goreleaser-pro licence and caches it.
 //
-// Ported from truvity/bar's retired barctl (cmd/setup-goreleaser-key). One
-// behaviour changed deliberately in the move: the cache is now USER-level, not
-// repo-level.
+// Ported from the retired internal monorepo's barctl (cmd/setup-goreleaser-key).
+// One behaviour changed deliberately in the move: the cache is now USER-level,
+// not repo-level.
 //
-// bar cached to <gitRoot>/bin/.goreleaser-key, so every clone and every git
-// worktree fetched the licence again — the same secret, re-read from Secrets
-// Manager, once per working copy. The licence belongs to the developer, not to
-// a checkout, so it is cached once per machine and every repo reads it.
+// The retired internal monorepo cached to <gitRoot>/bin/.goreleaser-key, so
+// every clone and every git worktree fetched the licence again — the same
+// secret, re-read from Secrets Manager, once per working copy. The licence
+// belongs to the developer, not to a checkout, so it is cached once per
+// machine and every repo reads it.
 //
 // Two sources, in order:
 //

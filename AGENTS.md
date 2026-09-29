@@ -33,8 +33,9 @@ direnvctl     (check | setup) <dir>
 Four shapes that are easy to guess wrong:
 
 - **`awsctl` takes no flags and no arguments.** Selecting a profile is
-  `AWS_PROFILE=… awsctl`. bar's docs claimed a `--profile` flag for a year;
-  the binary never parsed one and silently ignored it.
+  `AWS_PROFILE=… awsctl`. The retired internal monorepo's docs claimed a
+  `--profile` flag for a year; the binary never parsed one and silently
+  ignored it.
 - **`--ecr` is repeatable**, one per registry, and its value is a single
   `account:region` pair — not two arguments.
 - **`direnvctl` requires its `<dir>`**; there is no default and no cwd
@@ -76,9 +77,10 @@ Do not `go install` and do not add them to `devbox.json` packages. Pin in
 `go.mod` with a `tool` directive, add a `bin/<tool>` wrapper that `exec`s
 `go run`, and put `bin/` on PATH via devbox.
 
-One trap, learned the hard way in bar: `bin/.gitignore` there is deny-by-default
-(`*` plus an explicit `!name` per wrapper). A new wrapper that is not listed
-works on the machine that created it and is `command not found` in CI.
+One trap, learned the hard way in the retired internal monorepo:
+`bin/.gitignore` there is deny-by-default (`*` plus an explicit `!name` per
+wrapper). A new wrapper that is not listed works on the machine that created
+it and is `command not found` in CI.
 
 ## Working in this repo
 

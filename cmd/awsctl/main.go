@@ -4,11 +4,11 @@
 // actually gone, so it is safe to make every other setup step depend on it —
 // which is what the caller's task graph does.
 //
-// Ported from truvity/bar's retired barctl (cmd/setup-login). It reads no
-// project config and takes no profile: `aws sso login` uses the ambient AWS
-// configuration, so selecting a profile is `AWS_PROFILE=… awsctl`, the
-// standard way. bar's docs claimed a `--profile` flag for a year; the binary
-// never parsed one and silently ignored it.
+// Ported from the retired internal monorepo's barctl (cmd/setup-login). It
+// reads no project config and takes no profile: `aws sso login` uses the
+// ambient AWS configuration, so selecting a profile is `AWS_PROFILE=…
+// awsctl`, the standard way. Its docs claimed a `--profile` flag for a
+// year; the binary never parsed one and silently ignored it.
 package main
 
 import (
