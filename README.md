@@ -11,8 +11,8 @@ Developer machine provisioning for the Truvity estate.
 | `direnvctl` | keeps direnv's whitelist covering a directory of working copies |
 
 Each tool is a standalone binary, published only as a tagged Go module —
-there is no other distribution. Nothing is left in `truvity/bar` — barctl is
-fully retired.
+there is no other distribution. Nothing is left in the retired internal
+monorepo these tools were extracted from.
 
 ## Who it is for
 
@@ -31,18 +31,19 @@ Two nouns: a **tool** and its **caller**. A tool takes its *data* — which AWS
 accounts, which regions, which secret — as arguments, never as a constant in
 this repo; the calling repo (or the developer, at the shell) supplies that
 data, and this repo supplies the mechanism. That split is why this could
-leave `bar` at all: everything here used to live inside the retired `barctl`
-package there, and onboarding to gitops, gemaal or any other repo meant
-checking out bar just to configure your machine.
+leave the old monorepo at all: everything here used to live inside its
+retired `barctl` package, and onboarding to gemaal or any other repo meant
+checking that monorepo out just to configure your machine.
 
 ### Two behaviours changed in the move, deliberately
 
-**`licencectl` caches per machine, not per repo.** bar cached to
+**`licencectl` caches per machine, not per repo.** The old tooling cached to
 `<gitRoot>/bin/.goreleaser-key`, so every clone and every git worktree fetched
 the same secret again. A licence belongs to the developer, not to a checkout.
 
-**`playwrightctl` can answer, not just complain.** bar could say "these two
-disagree" but never "here is the newest version you can actually have".
+**`playwrightctl` can answer, not just complain.** The old tooling could say
+"these two disagree" but never "here is the newest version you can actually
+have".
 `playwrightctl latest` prints the highest release present in **both** nixpkgs
 and npm — the number an upgrade needs, since npm regularly offers versions
 nixpkgs has never packaged and the mismatch only surfaces at run time.
@@ -72,12 +73,9 @@ and per day.
 
 ## Consumers
 
-Developer machines in the Truvity estate. These tools are called by:
-
-- **bar** — workstation is the new home for machine-provisioning tools that
-  bar calls during developer onboarding
-- Each repository that needs machine setup — e.g., for ECR credentials or AWS
-  SSO session management
+Developer machines in the Truvity estate. Each repository that needs machine
+setup — e.g., for ECR credentials or AWS SSO session management — calls these
+tools directly from its own onboarding script; there is no intermediary repo.
 
 ## Neighbours
 
@@ -119,7 +117,8 @@ it — a match fails the build, not just a report.
 
 All five tools are built and released: `dockerctl`, `awsctl`, `licencectl`,
 `playwrightctl` and `direnvctl`. `v0.1.0` was the initial public release
-after the move out of `bar`; the latest tag is `v0.1.2`. CI runs `build`,
+after the move out of the retired internal monorepo; the latest tag is
+`v0.1.2`. CI runs `build`,
 `test`, `lint` and `leak-canary` on every push and pull request; a separate
 daily workflow runs `vuln`. Nothing described in this README is pending.
 
