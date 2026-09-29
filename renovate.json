@@ -1,4 +1,6 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Overrides beyond the shared truvity/ci-workflows preset: labels, automerge shape and lockfile maintenance are this repo's own choice; packageRules below each carry their own reason.",
   "extends": [
     "github>truvity/ci-workflows"
   ],
