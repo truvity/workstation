@@ -42,7 +42,7 @@ this repo carries the mechanism and the calling repo carries the policy. Run
 them without cloning anything:
 
 ```bash
-go run github.com/truvity/workstation/cmd/dockerctl@v0.1.0 \
+go run github.com/truvity/workstation/cmd/dockerctl@v0.1.1 \
   --ecr <account-id>:<region> \
   --ecr <account-id>:<region>
 ```
@@ -58,3 +58,26 @@ thing that fixes it are the same binary and cannot drift apart.
 **Pin the version.** These tools write to your home directory; `@latest` is
 the last place you want an unpinned fetch resolving differently per machine
 and per day.
+
+## Consumers
+
+Developer machines in the Truvity estate. These tools are called by:
+
+- **bar** — workstation is the new home for machine-provisioning tools that
+  bar calls during developer onboarding
+- Each repository that needs machine setup — e.g., for ECR credentials or AWS
+  SSO session management
+
+## Neighbours
+
+`workstation` overlaps with `access-roster` on developer-machine AWS
+credentials:
+
+- **access-roster** via `accessctl`: the estate path for minting AWS
+  credentials with dynamic scope and audience gating, issued by the OIDC
+  issuer and requiring no stored secrets
+- **awsctl**: the SSO fallback when access-roster is unreachable; both live
+  on the same machine and are called as alternatives
+
+`ocictl` handles ECR authentication at build time. `workstation` via
+`dockerctl` handles ECR authentication on a developer machine.

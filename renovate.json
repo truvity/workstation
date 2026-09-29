@@ -1,8 +1,6 @@
 {
   "extends": [
-    "config:recommended",
-    "security:gomodIndirectSecurityUpdates",
-    "helpers:pinGitHubActionDigests"
+    "github>truvity/ci-workflows"
   ],
   "osvVulnerabilityAlerts": true,
   "labels": [
