@@ -180,12 +180,12 @@ func Check(ctx context.Context, logger *slog.Logger, requiredDir string) error {
 	return checkDirenvWhitelist(configPath, requiredDir)
 }
 
-// The directory to cover is now a PARAMETER, not derived here. In bar this
-// resolved <main repo root>/worktree through a git helper, which tied this
-// code to one repository's layout and to a git dependency it did not
-// otherwise need. The caller knows which directory it wants covered; this
-// package knows how direnv decides coverage. That split is what let the code
-// leave bar.
+// The directory to cover is now a PARAMETER, not derived here. In the
+// retired internal monorepo this resolved <main repo root>/worktree through
+// a git helper, which tied this code to one repository's layout and to a git
+// dependency it did not otherwise need. The caller knows which directory it
+// wants covered; this package knows how direnv decides coverage. That split
+// is what let the code leave the retired internal monorepo.
 
 // Setup ensures the direnv whitelist covers the
 // worktree prefix, adding the stable <main repo root>/worktree entry only

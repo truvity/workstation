@@ -3,7 +3,8 @@
 //
 // The accounts are ARGUMENTS, not built in: this repo owns the mechanism
 // and the calling repo owns which accounts it needs. That split is why
-// this could leave bar at all — bar's platform.yaml keeps the data.
+// this could leave the retired internal monorepo at all — its
+// platform.yaml keeps the data.
 package main
 
 import (

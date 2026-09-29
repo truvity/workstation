@@ -1,7 +1,7 @@
 // Package dockercfg edits ~/.docker/config.json credential helpers.
 //
-// Ported from truvity/bar's retired barctl package. Two properties came
-// with it and must not be lost in any future rewrite:
+// Ported from the retired internal monorepo's barctl package. Two properties
+// came with it and must not be lost in any future rewrite:
 //
 //   - MERGE, never clobber. The file is read, credHelpers is merged into
 //     it, and everything else — auths, credsStore, plugin settings, the

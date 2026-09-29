@@ -29,7 +29,7 @@ func TestPathPrefixCovers(t *testing.T) {
 		{
 			name:  "covers deep descendant",
 			entry: "/home/x/github/truvity",
-			dir:   "/home/x/github/truvity/bar/worktree",
+			dir:   "/home/x/github/truvity/example-monorepo/worktree",
 			want:  true,
 		},
 		{
@@ -77,7 +77,7 @@ func TestPathPrefixCovers(t *testing.T) {
 		{
 			name:  "boundary check with multi-segment suffix",
 			entry: "/home/x/github/truvity",
-			dir:   "/home/x/github/truvity-fork/bar",
+			dir:   "/home/x/github/truvity-fork/example-monorepo",
 			want:  false,
 		},
 	}
@@ -108,7 +108,7 @@ func TestWhitelistCovers(t *testing.T) {
 		{
 			name:      "parent prefix covers",
 			wl:        direnvWhitelist{Prefix: []string{"/home/x/github/truvity"}},
-			dir:       "/home/x/github/truvity/bar/worktree",
+			dir:       "/home/x/github/truvity/example-monorepo/worktree",
 			wantEntry: "/home/x/github/truvity",
 			wantOK:    true,
 		},
@@ -322,7 +322,7 @@ func TestAddPrefixToWhitelist(t *testing.T) {
 }
 
 func TestSetupDirenvWhitelist(t *testing.T) {
-	target := "/repo/bar/worktree"
+	target := "/repo/example-monorepo/worktree"
 
 	t.Run("creates config when missing", func(t *testing.T) {
 		configPath := filepath.Join(t.TempDir(), "direnv", "direnv.toml")
@@ -614,7 +614,7 @@ func TestSetupDirenvWhitelistFollowsSymlink(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	changed, err := setupDirenvWhitelist(link, "/home/u/bar/worktree")
+	changed, err := setupDirenvWhitelist(link, "/home/u/example-monorepo/worktree")
 	if err != nil || !changed {
 		t.Fatalf("setup: changed=%v err=%v", changed, err)
 	}
@@ -633,7 +633,7 @@ func TestSetupDirenvWhitelistFollowsSymlink(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if !strings.Contains(string(got), "/home/u/bar/worktree") || !strings.Contains(string(got), "/elsewhere") {
+	if !strings.Contains(string(got), "/home/u/example-monorepo/worktree") || !strings.Contains(string(got), "/elsewhere") {
 		t.Fatalf("linked dotfile source must carry the change and keep entries, got:\n%s", got)
 	}
 }

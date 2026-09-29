@@ -8,10 +8,10 @@
 //	direnvctl check <dir>    # is <dir> covered?
 //	direnvctl setup <dir>    # cover it, if nothing already does
 //
-// Ported from truvity/bar's retired barctl. One thing changed: bar derived
-// the directory from its own git layout (<main repo root>/worktree), which
-// tied the code to one repository. The directory is an argument now — the
-// caller knows which one it wants, this tool knows how direnv decides
+// Ported from the retired internal monorepo's barctl. One thing changed: it
+// derived the directory from its own git layout (<main repo root>/worktree),
+// which tied the code to one repository. The directory is an argument now —
+// the caller knows which one it wants, this tool knows how direnv decides
 // coverage.
 //
 // The edit is textual, so comments and formatting in direnv.toml survive, and

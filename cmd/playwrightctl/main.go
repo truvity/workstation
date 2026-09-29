@@ -6,8 +6,8 @@
 // RUN time as a driver error — not at install, which is why it is worth a
 // check of its own.
 //
-// Ported from truvity/bar's retired barctl (the playwright half of
-// setup-env-check), with the missing half added: bar could only ever say
+// Ported from the retired internal monorepo's barctl (the playwright half of
+// setup-env-check), with the missing half added: it could only ever say
 // "these disagree", never "here is the newest version you can actually have".
 //
 //	playwrightctl check     # do the two sides agree?
