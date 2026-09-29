@@ -22,4 +22,4 @@ the [releases page](https://github.com/truvity/workstation/releases).
 - Initial public release
 - Five binaries: `dockerctl`, `awsctl`, `licencectl`, `playwrightctl`,
   `direnvctl`
-- `direnvctl` — the final tool moved out of bar
+- `direnvctl` — the final tool moved out of the retired internal monorepo
