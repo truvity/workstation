@@ -79,13 +79,13 @@ tools directly from its own onboarding script; there is no intermediary repo.
 
 ## Neighbours
 
-`workstation` overlaps with `access-roster` on developer-machine AWS
+`workstation` overlaps with `sluis` on developer-machine AWS
 credentials:
 
-- **access-roster** via `accessctl`: the estate path for minting AWS
+- **sluis** via `sluisctl`: the estate path for minting AWS
   credentials with dynamic scope and audience gating, issued by the OIDC
   issuer and requiring no stored secrets
-- **awsctl**: the SSO fallback when access-roster is unreachable; both live
+- **awsctl**: the SSO fallback when sluis is unreachable; both live
   on the same machine and are called as alternatives
 
 `ocictl` handles ECR authentication at build time. `workstation` via
