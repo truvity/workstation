@@ -71,6 +71,15 @@ thing that fixes it are the same binary and cannot drift apart.
 the last place you want an unpinned fetch resolving differently per machine
 and per day.
 
+## Platform part and company part
+
+**Platform part.** None. The tools run on a developer's machine, and the
+platform admin applies nothing from this repository.
+
+**Company part.** None. A repository that calls the tools passes the account,
+region, secret and profile as arguments, as described above. Nothing is
+written into a company's box.
+
 ## Consumers
 
 Developer machines in the Truvity estate. Each repository that needs machine
@@ -117,9 +126,9 @@ it — a match fails the build, not just a report.
 
 All five tools are built and released: `dockerctl`, `awsctl`, `licencectl`,
 `playwrightctl` and `direnvctl`. `v0.1.0` was the initial public release
-after the move out of the retired internal monorepo; the latest tag is
-`v0.1.2`. CI runs `build`,
-`test`, `lint` and `leak-canary` on every push and pull request; a separate
+after the move out of the retired internal monorepo; the current version is
+on the [releases page](https://github.com/truvity/workstation/releases). CI
+runs `build`, `test`, `lint` and `leak-canary` on every push and pull request; a separate
 daily workflow runs `vuln`. Nothing described in this README is pending.
 
 ## Development
