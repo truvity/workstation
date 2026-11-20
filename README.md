@@ -6,7 +6,6 @@ Developer machine provisioning for the Truvity estate.
 | --- | --- |
 | `dockerctl` | `~/.docker/config.json` ECR credential helpers |
 | `awsctl` | keeps an AWS SSO session alive — idempotent, so other steps can depend on it |
-| `licencectl` | fetches the goreleaser-pro licence, cached **once per machine** |
 | `playwrightctl` | keeps the nix browsers and the npm runner in step, and finds the newest shared version |
 | `direnvctl` | keeps direnv's whitelist covering a directory of working copies |
 
@@ -28,18 +27,14 @@ proto.
 ## The model
 
 Two nouns: a **tool** and its **caller**. A tool takes its *data* — which AWS
-accounts, which regions, which secret — as arguments, never as a constant in
+accounts, which regions — as arguments, never as a constant in
 this repo; the calling repo (or the developer, at the shell) supplies that
 data, and this repo supplies the mechanism. That split is why this could
 leave the old monorepo at all: everything here used to live inside its
 retired `barctl` package, and onboarding to gemaal or any other repo meant
 checking that monorepo out just to configure your machine.
 
-### Two behaviours changed in the move, deliberately
-
-**`licencectl` caches per machine, not per repo.** The old tooling cached to
-`<gitRoot>/bin/.goreleaser-key`, so every clone and every git worktree fetched
-the same secret again. A licence belongs to the developer, not to a checkout.
+### A behaviour changed in the move, deliberately
 
 **`playwrightctl` can answer, not just complain.** The old tooling could say
 "these two disagree" but never "here is the newest version you can actually
@@ -53,7 +48,7 @@ nixpkgs has never packaged and the mismatch only surfaces at run time.
 Run a tool without cloning anything, pinned to a tagged version:
 
 ```bash
-go run github.com/truvity/workstation/cmd/dockerctl@v0.1.2 \
+go run github.com/truvity/workstation/cmd/dockerctl@v0.2.0 \
   --ecr <account-id>:<region> \
   --ecr <account-id>:<region>
 ```
@@ -103,9 +98,9 @@ There is no separate `docs/` directory; the reference lives beside the code:
 
 ## The rule that makes this repository public
 
-Every account id, region, secret id and profile these tools touch is a
-**caller argument** — `--ecr`, `--secret-id`, `--profile`, `--region` — never
-a constant committed here. That split is the whole reason a
+Every account id and region these tools touch is a **caller argument** —
+`--ecr`, or `AWS_PROFILE` in the environment — never a constant committed
+here. That split is the whole reason a
 machine-provisioning repo can be public.
 
 [`hack/leak-canary.sh`](hack/leak-canary.sh) enforces it mechanically: it
@@ -115,10 +110,11 @@ it — a match fails the build, not just a report.
 
 ## Status
 
-All five tools are built and released: `dockerctl`, `awsctl`, `licencectl`,
+All four tools are built and released: `dockerctl`, `awsctl`,
 `playwrightctl` and `direnvctl`. `v0.1.0` was the initial public release
-after the move out of the retired internal monorepo; the latest tag is
-`v0.1.2`. CI runs `build`,
+after the move out of the retired internal monorepo; `licencectl` was retired
+in `v0.2.0`, since nothing uses goreleaser Pro any more; the latest tag is
+`v0.2.0`. CI runs `build`,
 `test`, `lint` and `leak-canary` on every push and pull request; a separate
 daily workflow runs `vuln`. Nothing described in this README is pending.
 

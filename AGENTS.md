@@ -5,13 +5,12 @@ in a repo that consumes it. Human-readable too — nothing here is agent-only.
 
 ## What this repo ships
 
-Five binaries. `workstation` is the **repository** name, never a command:
+Four binaries. `workstation` is the **repository** name, never a command:
 
 | Command | Does |
 | --- | --- |
 | `dockerctl` | `~/.docker/config.json` ECR credential helpers |
 | `awsctl` | keeps an AWS SSO session alive (idempotent) |
-| `licencectl` | fetches + caches the goreleaser-pro licence |
 | `playwrightctl` | keeps the nix browsers and the npm runner in step |
 | `direnvctl` | keeps direnv's whitelist covering a directory of working copies |
 
@@ -25,7 +24,6 @@ This is the whole of it. There are no other subcommands and no other flags:
 ```
 dockerctl     [--check] --ecr <account-id>:<region> [--ecr <account-id>:<region> …]
 awsctl
-licencectl    [--secret-id <id>] [--profile <aws>] [--region <r>] [--force] [--path]
 playwrightctl [check | latest]
 direnvctl     (check | setup) <dir>
 ```
@@ -61,7 +59,7 @@ the command. If you cannot verify an invocation, write that it is unverified.
 
 ## This repository is public, and that is a constraint
 
-These tools take an account id, a region, a secret id and a profile — and every
+These tools take an account id and a region — and every
 one of them is a **caller argument**, never a constant in this repo. That is
 the whole reason a machine-provisioning repo can be public.
 
